@@ -1,0 +1,64 @@
+{% extends "base.html" %}
+{% load static %}
+
+{% block title %}Sign In – Kornialle{% endblock %}
+
+{% block content %}
+<div class="auth-page">
+    <div class="auth-card">
+        <div class="auth-logo">
+            <img src="https://i.ibb.co/SXz2NcMn/Whats-App-Image-2026-02-17-at-8-25-31-PM.jpg" alt="Kornialle" />
+            <h1>Kornialle</h1>
+        </div>
+
+        <h2>Welcome back</h2>
+        <p class="auth-subtitle">Sign in to access your bookings and member rates.</p>
+
+        {% if form.errors %}
+        <div class="form-errors">
+            Please correct the errors below.
+        </div>
+        {% endif %}
+
+        <form method="POST" action="{% url 'login' %}">
+            {% csrf_token %}
+
+            <div class="form-row">
+                <label for="id_username">Username or Email</label>
+                {{ form.username }}
+                {% if form.username.errors %}
+                <span class="field-error">{{ form.username.errors }}</span>
+                {% endif %}
+            </div>
+
+            <div class="form-row">
+                <label for="id_password">Password</label>
+                {{ form.password }}
+            </div>
+
+            <div class="form-check-row">
+                {{ form.remember_me }}
+                <label for="id_remember_me">Remember me</label>
+                <a href="#" class="forgot-link">Forgot password?</a>
+            </div>
+
+            <button type="submit" class="btn-auth">Sign In</button>
+        </form>
+
+        <div class="auth-divider">or</div>
+
+        <p class="auth-switch">
+            Don't have an account? <a href="{% url 'register' %}">Register free →</a>
+        </p>
+
+        <div class="member-perks">
+            <h4>💌 Member benefits</h4>
+            <ul>
+                <li>✓ Secret member-only prices</li>
+                <li>✓ View and manage your bookings</li>
+                <li>✓ Exclusive deals in your inbox</li>
+            </ul>
+        </div>
+    </div>
+</div>
+{% endblock %}

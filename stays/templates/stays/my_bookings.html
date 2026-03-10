@@ -1,0 +1,51 @@
+{% extends "base.html" %}
+
+{% block title %}My Bookings – Kornialle{% endblock %}
+
+{% block content %}
+<div class="page-container">
+    <h1>My Bookings</h1>
+    <p>All reservations linked to your account.</p>
+
+    {% if bookings %}
+    <div class="bookings-table-wrap">
+        <table class="bookings-table">
+            <thead>
+                <tr>
+                    <th>Code</th>
+                    <th>Property</th>
+                    <th>Check-in</th>
+                    <th>Check-out</th>
+                    <th>Nights</th>
+                    <th>Total</th>
+                    <th>Status</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for booking in bookings %}
+                <tr>
+                    <td><code>{{ booking.confirmation_code }}</code></td>
+                    <td>
+                        <strong>{{ booking.property.name }}</strong><br>
+                        <small>{{ booking.property.city }}, {{ booking.property.state }}</small>
+                    </td>
+                    <td>{{ booking.check_in|date:"M j, Y" }}</td>
+                    <td>{{ booking.check_out|date:"M j, Y" }}</td>
+                    <td>{{ booking.nights }}</td>
+                    <td>{% if booking.total_price %}${{ booking.total_price }}{% else %}—{% endif %}</td>
+                    <td><span class="status-badge status-{{ booking.status }}">{{ booking.get_status_display }}</span></td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+    {% else %}
+    <div class="empty-state">
+        <p>No bookings yet.</p>
+        <a href="{% url 'home' %}#booking" class="btn-primary">Book a Stay</a>
+    </div>
+    {% endif %}
+
+    <a href="{% url 'profile' %}" class="btn-outline">← Back to Profile</a>
+</div>
+{% endblock %}

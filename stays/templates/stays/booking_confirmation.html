@@ -1,0 +1,51 @@
+{% extends "base.html" %}
+
+{% block title %}Booking Confirmed – Kornialle{% endblock %}
+
+{% block content %}
+<div class="confirmation-page">
+    <div class="confirmation-card">
+        <div class="confirmation-icon">🎉</div>
+        <h1>Booking Confirmed!</h1>
+        <p>Your reservation has been placed. A confirmation email has been sent to <strong>{{ booking.email }}</strong>.</p>
+
+        <div class="confirmation-code-box">
+            <label>Your Confirmation Code</label>
+            <div class="code">{{ booking.confirmation_code }}</div>
+        </div>
+
+        <div class="booking-summary">
+            <h3>Booking Summary</h3>
+            <table>
+                <tr><td>Property</td><td><strong>{{ booking.property.name }}</strong></td></tr>
+                <tr><td>Location</td><td>{{ booking.property.city }}, {{ booking.property.state }}</td></tr>
+                <tr><td>Guest</td><td>{{ booking.first_name }} {{ booking.last_name }}</td></tr>
+                <tr><td>Check-in</td><td>{{ booking.check_in|date:"D, M j, Y" }}</td></tr>
+                <tr><td>Check-out</td><td>{{ booking.check_out|date:"D, M j, Y" }}</td></tr>
+                <tr><td>Nights</td><td>{{ booking.nights }}</td></tr>
+                <tr><td>Guests</td><td>{{ booking.adults }} adults{% if booking.children %}, {{ booking.children }} children{% endif %}</td></tr>
+                <tr><td>Rooms</td><td>{{ booking.rooms }}</td></tr>
+                {% if booking.total_price %}
+                <tr><td>Total Price</td><td><strong>${{ booking.total_price }}</strong></td></tr>
+                {% endif %}
+                <tr><td>Payment</td><td>{{ booking.get_payment_method_display }}</td></tr>
+                <tr><td>Status</td><td><span class="status-badge status-{{ booking.status }}">{{ booking.get_status_display }}</span></td></tr>
+            </table>
+        </div>
+
+        {% if booking.special_requests %}
+        <div class="special-requests">
+            <h4>Special Requests</h4>
+            <p>{{ booking.special_requests }}</p>
+        </div>
+        {% endif %}
+
+        <div class="confirmation-actions">
+            <a href="{% url 'home' %}" class="btn-primary">Back to Home</a>
+            {% if user.is_authenticated %}
+            <a href="{% url 'my_bookings' %}" class="btn-outline">View All Bookings</a>
+            {% endif %}
+        </div>
+    </div>
+</div>
+{% endblock %}

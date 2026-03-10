@@ -1,0 +1,227 @@
+[
+  {
+    "model": "stays.property",
+    "pk": 1,
+    "fields": {
+      "name": "The Manhattan Suite Hotel",
+      "property_type": "hotel",
+      "description": "A luxurious suite hotel in the heart of Manhattan, offering world-class amenities and stunning city views. Perfect for business and leisure travelers alike.",
+      "short_description": "Luxury suites in the heart of Manhattan with exceptional service.",
+      "city": "New York City",
+      "state": "NY",
+      "address": "350 5th Avenue, New York, NY 10118",
+      "main_image_url": "https://images.unsplash.com/photo-1566073771259-6a8506099945?w=600&auto=format&fit=crop&q=75",
+      "has_wifi": true,
+      "has_pool": false,
+      "has_breakfast": true,
+      "has_free_cancellation": true,
+      "has_parking": false,
+      "has_gym": true,
+      "has_city_view": true,
+      "max_guests": 4,
+      "max_rooms": 2,
+      "is_active": true,
+      "is_featured": true,
+      "is_deal": false,
+      "rating": "9.4",
+      "review_count": 1284,
+      "created_at": "2026-01-01T00:00:00Z",
+      "updated_at": "2026-01-01T00:00:00Z"
+    }
+  },
+  {
+    "model": "stays.property",
+    "pk": 2,
+    "fields": {
+      "name": "Ocean View Luxury Villa",
+      "property_type": "vacation_home",
+      "description": "A stunning oceanfront villa in Miami Beach with breathtaking views, private pool, and direct beach access. Perfect for a luxury getaway.",
+      "short_description": "Oceanfront villa with private pool and direct beach access.",
+      "city": "Miami Beach",
+      "state": "FL",
+      "address": "100 Ocean Drive, Miami Beach, FL 33139",
+      "main_image_url": "https://images.unsplash.com/photo-1520250497591-112f2f40a3f4?w=600&auto=format&fit=crop&q=75",
+      "has_wifi": true,
+      "has_pool": true,
+      "has_breakfast": false,
+      "has_free_cancellation": true,
+      "has_parking": true,
+      "has_ocean_view": true,
+      "max_guests": 8,
+      "max_rooms": 4,
+      "is_active": true,
+      "is_featured": true,
+      "is_deal": true,
+      "rating": "9.7",
+      "review_count": 874,
+      "created_at": "2026-01-01T00:00:00Z",
+      "updated_at": "2026-01-01T00:00:00Z"
+    }
+  },
+  {
+    "model": "stays.property",
+    "pk": 3,
+    "fields": {
+      "name": "Smoky Mountain Forest Cabin",
+      "property_type": "cabin",
+      "description": "A cozy mountain cabin nestled in the Smoky Mountains near Asheville, featuring a hot tub, fire pit, and stunning forest views.",
+      "short_description": "Cozy cabin with hot tub and fire pit in the Smoky Mountains.",
+      "city": "Asheville",
+      "state": "NC",
+      "address": "1 Mountain View Rd, Asheville, NC 28801",
+      "main_image_url": "https://images.unsplash.com/photo-1588880331179-bc9b93a8cb5e?w=600&auto=format&fit=crop&q=75",
+      "has_wifi": true,
+      "has_pool": false,
+      "has_breakfast": false,
+      "has_free_cancellation": true,
+      "has_hot_tub": true,
+      "has_fire_pit": true,
+      "max_guests": 6,
+      "max_rooms": 3,
+      "is_active": true,
+      "is_featured": true,
+      "is_deal": true,
+      "rating": "9.2",
+      "review_count": 493,
+      "created_at": "2026-01-01T00:00:00Z",
+      "updated_at": "2026-01-01T00:00:00Z"
+    }
+  },
+  {
+    "model": "stays.property",
+    "pk": 4,
+    "fields": {
+      "name": "Riverwalk Boutique Loft",
+      "property_type": "apartment",
+      "description": "A stylish boutique loft apartment in Chicago's Riverwalk district with stunning city views, modern amenities, and gym access.",
+      "short_description": "Modern loft in Chicago's Riverwalk with stunning city views.",
+      "city": "Chicago",
+      "state": "IL",
+      "address": "400 N Michigan Ave, Chicago, IL 60611",
+      "main_image_url": "https://images.unsplash.com/photo-1551882547-ff40c63fe5fa?w=600&auto=format&fit=crop&q=75",
+      "has_wifi": true,
+      "has_pool": false,
+      "has_breakfast": false,
+      "has_free_cancellation": true,
+      "has_gym": true,
+      "has_city_view": true,
+      "max_guests": 3,
+      "max_rooms": 1,
+      "is_active": true,
+      "is_featured": true,
+      "is_deal": false,
+      "rating": "9.0",
+      "review_count": 312,
+      "created_at": "2026-01-01T00:00:00Z",
+      "updated_at": "2026-01-01T00:00:00Z"
+    }
+  },
+  {
+    "model": "stays.pricing",
+    "pk": 1,
+    "fields": {
+      "property": 1,
+      "name": "Standard Rate",
+      "price_per_night": "278.00",
+      "original_price": "340.00",
+      "discount_percent": 18,
+      "valid_from": null,
+      "valid_to": null,
+      "is_active": true,
+      "created_at": "2026-01-01T00:00:00Z"
+    }
+  },
+  {
+    "model": "stays.pricing",
+    "pk": 2,
+    "fields": {
+      "property": 2,
+      "name": "Standard Rate",
+      "price_per_night": "420.00",
+      "original_price": null,
+      "discount_percent": 0,
+      "valid_from": null,
+      "valid_to": null,
+      "is_active": true,
+      "created_at": "2026-01-01T00:00:00Z"
+    }
+  },
+  {
+    "model": "stays.pricing",
+    "pk": 3,
+    "fields": {
+      "property": 3,
+      "name": "Hot Deal Rate",
+      "price_per_night": "149.00",
+      "original_price": "195.00",
+      "discount_percent": 24,
+      "valid_from": null,
+      "valid_to": null,
+      "is_active": true,
+      "created_at": "2026-01-01T00:00:00Z"
+    }
+  },
+  {
+    "model": "stays.pricing",
+    "pk": 4,
+    "fields": {
+      "property": 4,
+      "name": "Standard Rate",
+      "price_per_night": "210.00",
+      "original_price": null,
+      "discount_percent": 0,
+      "valid_from": null,
+      "valid_to": null,
+      "is_active": true,
+      "created_at": "2026-01-01T00:00:00Z"
+    }
+  },
+  {
+    "model": "stays.review",
+    "pk": 1,
+    "fields": {
+      "user": null,
+      "property": 1,
+      "booking": null,
+      "reviewer_name": "Sarah M.",
+      "reviewer_location": "New York City · Jan 2026",
+      "rating": "9.5",
+      "review_text": "Absolutely flawless from booking to check-out. The property was even better than the photos — will definitely be back.",
+      "is_verified": true,
+      "is_approved": true,
+      "created_at": "2026-01-20T00:00:00Z"
+    }
+  },
+  {
+    "model": "stays.review",
+    "pk": 2,
+    "fields": {
+      "user": null,
+      "property": 2,
+      "booking": null,
+      "reviewer_name": "James & Priya",
+      "reviewer_location": "Miami Beach · Dec 2025",
+      "rating": "9.8",
+      "review_text": "Incredible service, great deal, and the ocean views were breathtaking. Kornialle made everything so effortless.",
+      "is_verified": true,
+      "is_approved": true,
+      "created_at": "2025-12-28T00:00:00Z"
+    }
+  },
+  {
+    "model": "stays.review",
+    "pk": 3,
+    "fields": {
+      "user": null,
+      "property": 4,
+      "booking": null,
+      "reviewer_name": "Maria L.",
+      "reviewer_location": "Chicago · Feb 2026",
+      "rating": "9.2",
+      "review_text": "Easy checkout, seamless check-in and the staff were so welcoming. Highly recommend to anyone visiting the US.",
+      "is_verified": true,
+      "is_approved": true,
+      "created_at": "2026-02-10T00:00:00Z"
+    }
+  }
+]

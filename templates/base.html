@@ -1,0 +1,112 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>{% block title %}Kornialle – Find Your Perfect Stay in the USA{% endblock %}</title>
+    <link rel="stylesheet" href="{% static 'css/style.css' %}" />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet" />
+    {% block extra_head %}{% endblock %}
+</head>
+<body>
+
+<!-- ═══════════════════════════════════
+     NAV — now powered by Django auth
+     {{ user }} is the logged-in user
+     {{ user.is_authenticated }} = True/False
+     ═══════════════════════════════════ -->
+<nav class="navbar">
+    <div class="nav-inner">
+        <a href="{% url 'home' %}" class="nav-logo">
+            <img src="https://i.ibb.co/SXz2NcMn/Whats-App-Image-2026-02-17-at-8-25-31-PM.jpg" alt="Kornialle" />
+            Kornialle
+        </a>
+
+        <div class="nav-links">
+            <a href="{% url 'home' %}?type=hotel">🏨 Hotels</a>
+            <a href="{% url 'home' %}?type=vacation_home">🏠 Vacation Homes</a>
+            <a href="{% url 'home' %}?type=cabin">🏕️ Cabins</a>
+            <a href="{% url 'home' %}?type=apartment">🏢 Apartments</a>
+        </div>
+
+        <div class="nav-auth">
+            {% if user.is_authenticated %}
+                <!-- Logged-in: show user name and profile link -->
+                <a href="{% url 'profile' %}" class="nav-user">
+                    👤 {{ user.first_name|default:user.username }}
+                </a>
+                {% if user.is_staff %}
+                    <a href="/admin/" class="btn-admin">⚙️ Admin</a>
+                {% endif %}
+                <a href="{% url 'logout' %}" class="btn-outline">Sign Out</a>
+            {% else %}
+                <!-- Logged-out: show sign in and register -->
+                <a href="{% url 'login' %}" class="btn-outline">Sign In</a>
+                <a href="{% url 'register' %}" class="btn-primary">Register Free</a>
+            {% endif %}
+        </div>
+    </div>
+</nav>
+
+<!-- Flash Messages from Django -->
+{% if messages %}
+<div class="messages-container">
+    {% for message in messages %}
+    <div class="message message-{{ message.tags }}">
+        {{ message }}
+        <button onclick="this.parentElement.remove()">×</button>
+    </div>
+    {% endfor %}
+</div>
+{% endif %}
+
+<!-- Page Content -->
+{% block content %}{% endblock %}
+
+<!-- ═══════════════════════════════════
+     FOOTER
+     ═══════════════════════════════════ -->
+<footer class="footer">
+    <div class="footer-inner">
+        <div class="footer-brand">
+            <img src="https://i.ibb.co/SXz2NcMn/Whats-App-Image-2026-02-17-at-8-25-31-PM.jpg" alt="Kornialle" />
+            <p>Your trusted companion for stays across the United States. Thousands of properties, one seamless experience.</p>
+        </div>
+        <div class="footer-links">
+            <div>
+                <h4>Explore</h4>
+                <a href="{% url 'home' %}?type=hotel">Hotels</a>
+                <a href="{% url 'home' %}?type=vacation_home">Vacation Homes</a>
+                <a href="{% url 'home' %}?type=cabin">Cabins</a>
+                <a href="{% url 'home' %}?type=apartment">Apartments</a>
+            </div>
+            <div>
+                <h4>Account</h4>
+                {% if user.is_authenticated %}
+                    <a href="{% url 'profile' %}">My Profile</a>
+                    <a href="{% url 'my_bookings' %}">My Bookings</a>
+                    <a href="{% url 'logout' %}">Sign Out</a>
+                {% else %}
+                    <a href="{% url 'register' %}">Register</a>
+                    <a href="{% url 'login' %}">Sign In</a>
+                {% endif %}
+            </div>
+            <div>
+                <h4>Company</h4>
+                <a href="#">About Kornialle</a>
+                <a href="#">List Your Property</a>
+                <a href="#">Privacy Policy</a>
+            </div>
+        </div>
+    </div>
+    <div class="footer-bottom">
+        <p>© 2026 Kornialle. All rights reserved.</p>
+    </div>
+</footer>
+
+<script src="{% static 'js/main.js' %}"></script>
+{% block extra_js %}{% endblock %}
+</body>
+</html>

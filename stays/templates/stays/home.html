@@ -1,0 +1,305 @@
+{% extends "base.html" %}
+{% load static %}
+
+{% block title %}Kornialle – Find Your Perfect Stay in the USA{% endblock %}
+
+{% block content %}
+
+<!-- ═══════════════════════════════════════════════
+     HERO SECTION
+     ════════════════════════════════════════════ -->
+<section class="hero">
+    <div class="hero-badge">✦ USA's Most Trusted Stay Platform</div>
+    <h1>Find your next stay <em>across America</em></h1>
+    <p>Great prices on hotels, vacation homes, cabins and more — free cancellation on most bookings.</p>
+
+    <!-- Search Bar — submits to home view with ?q= parameter -->
+    <form class="search-bar" action="{% url 'home' %}" method="GET">
+        <div class="search-fields">
+            <div class="search-field">
+                <label>Where to?</label>
+                <input type="text" name="q" value="{{ search_q }}" placeholder="City or destination..." />
+            </div>
+            <div class="search-field">
+                <label>Type</label>
+                <select name="type">
+                    <option value="">All Types</option>
+                    <option value="hotel" {% if prop_type == 'hotel' %}selected{% endif %}>🏨 Hotels</option>
+                    <option value="vacation_home" {% if prop_type == 'vacation_home' %}selected{% endif %}>🏠 Vacation Homes</option>
+                    <option value="cabin" {% if prop_type == 'cabin' %}selected{% endif %}>🏕️ Cabins</option>
+                    <option value="apartment" {% if prop_type == 'apartment' %}selected{% endif %}>🏢 Apartments</option>
+                </select>
+            </div>
+        </div>
+        <button type="submit" class="btn-search">Search</button>
+    </form>
+
+    <div class="hero-stats">
+        <div><strong>3,200+</strong><span>Properties</span></div>
+        <div><strong>180+</strong><span>Cities</span></div>
+        <div><strong>4.9★</strong><span>Rating</span></div>
+        <div><strong>98%</strong><span>Happy Guests</span></div>
+    </div>
+</section>
+
+<!-- ═══════════════════════════════════════════════
+     FEATURED STAYS
+     Populated from database via {{ featured_properties }}
+     ════════════════════════════════════════════ -->
+<section class="section">
+    <div class="section-header">
+        <span class="section-label">Featured Stays</span>
+        <h2>Homes, apartments & more</h2>
+        <a href="{% url 'home' %}" class="see-all">See all</a>
+    </div>
+
+    <div class="property-grid">
+        {% for property in featured_properties %}
+        <div class="property-card">
+            <div class="card-image">
+                <a href="{% url 'property_detail' pk=property.pk %}">
+                    <img src="{{ property.get_image }}" alt="{{ property.name }}" loading="lazy" />
+                </a>
+                {% if property.pricing_set.filter.is_active %}
+                    {% with pricing=property.get_current_price %}
+                        {% if pricing.discount_percent %}
+                        <span class="badge badge-discount">−{{ pricing.discount_percent }}%</span>
+                        {% endif %}
+                    {% endwith %}
+                {% endif %}
+                {% if property.is_deal %}
+                <span class="badge badge-hot">Hot deal</span>
+                {% endif %}
+                <button class="wishlist-btn">♡</button>
+            </div>
+            <div class="card-body">
+                <div class="card-location">{{ property.city }}, {{ property.state }}</div>
+                <h3 class="card-name">
+                    <a href="{% url 'property_detail' pk=property.pk %}">{{ property.name }}</a>
+                </h3>
+                <div class="card-rating">
+                    <span class="rating-score">{{ property.rating }}</span>
+                    <span class="rating-label">
+                        {% if property.rating >= 9.5 %}Outstanding
+                        {% elif property.rating >= 9.0 %}Exceptional
+                        {% elif property.rating >= 8.5 %}Wonderful
+                        {% else %}Good
+                        {% endif %}
+                    </span>
+                    <span class="rating-count">{{ property.review_count }} reviews</span>
+                </div>
+                <div class="card-amenities">
+                    {% for amenity in property.get_amenities %}
+                    <span class="amenity-tag">{{ amenity }}</span>
+                    {% endfor %}
+                </div>
+                <div class="card-price">
+                    {% with pricing=property.get_current_price %}
+                    {% if pricing %}
+                        {% if pricing.original_price %}
+                        <span class="price-original">${{ pricing.original_price }}</span>
+                        {% endif %}
+                        <span class="price-current">${{ pricing.price_per_night }}</span>
+                        <span class="price-per">/night</span>
+                    {% else %}
+                        <span class="price-contact">Contact for price</span>
+                    {% endif %}
+                    {% endwith %}
+                    <a href="{% url 'property_detail' pk=property.pk %}" class="btn-view">View →</a>
+                </div>
+            </div>
+        </div>
+        {% empty %}
+        <!-- No properties yet — admin needs to add some via /admin/ -->
+        <div class="empty-state">
+            <p>No featured properties yet.</p>
+            {% if user.is_staff %}
+            <a href="/admin/stays/property/add/" class="btn-primary">+ Add Property</a>
+            {% endif %}
+        </div>
+        {% endfor %}
+    </div>
+</section>
+
+<!-- ═══════════════════════════════════════════════
+     POPULAR DESTINATIONS
+     City list from database
+     ════════════════════════════════════════════ -->
+<section class="section section-alt">
+    <div class="section-header">
+        <span class="section-label">Explore</span>
+        <h2>Popular Destinations</h2>
+    </div>
+    <div class="destinations-grid">
+        {% for city, state in cities %}
+        <a href="{% url 'home' %}?q={{ city }}" class="destination-card">
+            <div class="destination-info">
+                <h3>{{ city }}</h3>
+                <p>{{ state }}</p>
+            </div>
+        </a>
+        {% endfor %}
+    </div>
+</section>
+
+<!-- ═══════════════════════════════════════════════
+     BOOKING FORM SECTION
+     {{ booking_form }} is a Django ModelForm
+     Action → /booking/ → make_booking view
+     ════════════════════════════════════════════ -->
+<section class="section" id="booking">
+    <div class="section-header">
+        <span class="section-label">Reserve</span>
+        <h2>Make a Booking</h2>
+    </div>
+
+    <div class="booking-layout">
+        <div class="booking-form-wrap">
+            <h3>Guest Details</h3>
+
+            {% if not user.is_authenticated %}
+            <div class="auth-nudge">
+                <p>💌 <a href="{% url 'login' %}">Sign in</a> or <a href="{% url 'register' %}">register</a> to save your bookings and get member rates.</p>
+            </div>
+            {% endif %}
+
+            <!-- FORM: action posts to make_booking view -->
+            <form method="POST" action="{% url 'make_booking' %}">
+                {% csrf_token %}
+
+                <div class="form-row">
+                    {{ booking_form.first_name.label_tag }}
+                    {{ booking_form.first_name }}
+                    {% if booking_form.first_name.errors %}
+                        <span class="field-error">{{ booking_form.first_name.errors }}</span>
+                    {% endif %}
+                </div>
+
+                <div class="form-row">
+                    {{ booking_form.last_name.label_tag }}
+                    {{ booking_form.last_name }}
+                </div>
+
+                <div class="form-row">
+                    {{ booking_form.email.label_tag }}
+                    {{ booking_form.email }}
+                </div>
+
+                <div class="form-row">
+                    {{ booking_form.phone.label_tag }}
+                    {{ booking_form.phone }}
+                </div>
+
+                <div class="form-row">
+                    {{ booking_form.property.label_tag }}
+                    {{ booking_form.property }}
+                </div>
+
+                <div class="form-row-2col">
+                    <div class="form-row">
+                        {{ booking_form.check_in.label_tag }}
+                        {{ booking_form.check_in }}
+                    </div>
+                    <div class="form-row">
+                        {{ booking_form.check_out.label_tag }}
+                        {{ booking_form.check_out }}
+                    </div>
+                </div>
+
+                <div class="form-row-3col">
+                    <div class="form-row">
+                        {{ booking_form.adults.label_tag }}
+                        {{ booking_form.adults }}
+                    </div>
+                    <div class="form-row">
+                        {{ booking_form.children.label_tag }}
+                        {{ booking_form.children }}
+                    </div>
+                    <div class="form-row">
+                        {{ booking_form.rooms.label_tag }}
+                        {{ booking_form.rooms }}
+                    </div>
+                </div>
+
+                <div class="form-row">
+                    {{ booking_form.special_requests.label_tag }}
+                    {{ booking_form.special_requests }}
+                </div>
+
+                <div class="form-row">
+                    <label>Pay with</label>
+                    <div class="payment-options">
+                        {{ booking_form.payment_method }}
+                    </div>
+                </div>
+
+                <button type="submit" class="btn-book">🔒 Confirm Booking</button>
+                <p class="secure-note">🔐 256-bit SSL encrypted — your data is always safe</p>
+            </form>
+        </div>
+
+        <div class="booking-sidebar">
+            <div class="trust-items">
+                <div class="trust-item">🏷️ <strong>Best Price Guarantee</strong><p>Find it cheaper? We'll match it.</p></div>
+                <div class="trust-item">🔐 <strong>Secure Payments</strong><p>Your details are always protected.</p></div>
+                <div class="trust-item">✈️ <strong>Free Cancellation</strong><p>Plans changed? No charge.</p></div>
+                <div class="trust-item">⏰ <strong>Instant Confirmation</strong><p>Confirmed the moment you book.</p></div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- ═══════════════════════════════════════════════
+     REVIEWS SECTION
+     {{ approved_reviews }} from database
+     Only reviews approved by admin are shown
+     ════════════════════════════════════════════ -->
+<section class="section section-alt" id="reviews">
+    <div class="section-header">
+        <span class="section-label">Guest Reviews</span>
+        <h2>What guests say</h2>
+    </div>
+
+    <div class="reviews-grid">
+        {% for review in approved_reviews %}
+        <div class="review-card">
+            <div class="review-rating">{{ review.rating }}</div>
+            <div class="review-meta">
+                <strong>{{ review.reviewer_name }}</strong>
+                <span>{{ review.reviewer_location }}</span>
+                {% if review.is_verified %}<span class="verified">✓ Verified stay</span>{% endif %}
+            </div>
+            <p class="review-text">"{{ review.review_text }}"</p>
+        </div>
+        {% empty %}
+        <p class="empty-reviews">No reviews yet. Be the first to share your experience!</p>
+        {% endfor %}
+    </div>
+
+    <!-- Review Submission Form -->
+    <div class="review-form-wrap">
+        <h3>Share your experience</h3>
+        <form method="POST" action="{% url 'submit_review' %}">
+            {% csrf_token %}
+            <div class="form-row">
+                {{ review_form.reviewer_name.label_tag }}
+                {{ review_form.reviewer_name }}
+            </div>
+            <div class="form-row">
+                {{ review_form.property.label_tag }}
+                {{ review_form.property }}
+            </div>
+            <div class="form-row">
+                {{ review_form.rating.label_tag }}
+                {{ review_form.rating }}
+            </div>
+            <div class="form-row">
+                {{ review_form.review_text.label_tag }}
+                {{ review_form.review_text }}
+            </div>
+            <button type="submit" class="btn-primary">Submit Review</button>
+        </form>
+    </div>
+</section>
+
+{% endblock %}

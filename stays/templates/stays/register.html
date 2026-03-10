@@ -1,0 +1,81 @@
+{% extends "base.html" %}
+{% load static %}
+
+{% block title %}Register Free – Kornialle{% endblock %}
+
+{% block content %}
+<div class="auth-page">
+    <div class="auth-card auth-card-wide">
+        <div class="auth-logo">
+            <img src="https://i.ibb.co/SXz2NcMn/Whats-App-Image-2026-02-17-at-8-25-31-PM.jpg" alt="Kornialle" />
+            <h1>Kornialle</h1>
+        </div>
+
+        <h2>Create your free account</h2>
+        <p class="auth-subtitle">Get member-only prices and manage your bookings.</p>
+
+        {% if form.non_field_errors %}
+        <div class="form-errors">{{ form.non_field_errors }}</div>
+        {% endif %}
+
+        <form method="POST" action="{% url 'register' %}">
+            {% csrf_token %}
+
+            <div class="form-row-2col">
+                <div class="form-row">
+                    <label>First Name *</label>
+                    {{ form.first_name }}
+                    {% if form.first_name.errors %}<span class="field-error">{{ form.first_name.errors }}</span>{% endif %}
+                </div>
+                <div class="form-row">
+                    <label>Last Name *</label>
+                    {{ form.last_name }}
+                </div>
+            </div>
+
+            <div class="form-row">
+                <label>Email Address *</label>
+                {{ form.email }}
+                {% if form.email.errors %}<span class="field-error">{{ form.email.errors }}</span>{% endif %}
+            </div>
+
+            <div class="form-row">
+                <label>Phone (optional)</label>
+                {{ form.phone }}
+            </div>
+
+            <div class="form-row">
+                <label>Username *</label>
+                {{ form.username }}
+                {% if form.username.errors %}<span class="field-error">{{ form.username.errors }}</span>{% endif %}
+            </div>
+
+            <div class="form-row-2col">
+                <div class="form-row">
+                    <label>Password *</label>
+                    {{ form.password1 }}
+                    {% if form.password1.errors %}<span class="field-error">{{ form.password1.errors }}</span>{% endif %}
+                </div>
+                <div class="form-row">
+                    <label>Confirm Password *</label>
+                    {{ form.password2 }}
+                    {% if form.password2.errors %}<span class="field-error">{{ form.password2.errors }}</span>{% endif %}
+                </div>
+            </div>
+
+            <div class="form-check-row">
+                {{ form.newsletter }}
+                <label for="id_newsletter">Send me exclusive deals and offers by email</label>
+            </div>
+
+            <p class="terms-note">By registering, you agree to our <a href="#">Privacy Policy</a> and <a href="#">Terms of Service</a>.</p>
+
+            <button type="submit" class="btn-auth">Create Account →</button>
+        </form>
+
+        <p class="auth-switch">
+            Already have an account? <a href="{% url 'login' %}">Sign in →</a>
+        </p>
+    </div>
+</div>
+{% endblock %}
