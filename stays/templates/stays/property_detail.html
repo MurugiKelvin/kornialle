@@ -1,0 +1,215 @@
+{% extends "base.html" %}
+{% load static %}
+
+{% block title %}{{ property.name }} – Kornialle{% endblock %}
+
+{% block content %}
+<div class="property-detail-page">
+
+    <!-- ── PROPERTY HERO IMAGE ── -->
+    <div class="detail-hero">
+        <img src="{{ property.get_image }}" alt="{{ property.name }}" />
+        <div class="detail-hero-overlay">
+            <div class="detail-hero-content">
+                <span class="property-type-badge">{{ property.get_property_type_display }}</span>
+                <h1>{{ property.name }}</h1>
+                <p>📍 {{ property.address }}, {{ property.city }}, {{ property.state }}</p>
+            </div>
+        </div>
+    </div>
+
+    <div class="detail-layout">
+
+        <!-- ── LEFT COLUMN ── -->
+        <div class="detail-main">
+
+            <!-- Rating -->
+            <div class="detail-rating-bar">
+                <span class="rating-score-lg">{{ property.rating }}</span>
+                <div>
+                    <strong>
+                        {% if property.rating >= 9.5 %}Outstanding
+                        {% elif property.rating >= 9.0 %}Exceptional
+                        {% elif property.rating >= 8.5 %}Wonderful
+                        {% else %}Good
+                        {% endif %}
+                    </strong>
+                    <p>{{ property.review_count }} verified reviews</p>
+                </div>
+            </div>
+
+            <!-- Description -->
+            <div class="detail-section">
+                <h2>About this property</h2>
+                <p>{{ property.description }}</p>
+            </div>
+
+            <!-- Amenities -->
+            <div class="detail-section">
+                <h2>Amenities</h2>
+                <div class="amenities-grid">
+                    {% if property.has_wifi %}<div class="amenity-item">📶 Free WiFi</div>{% endif %}
+                    {% if property.has_pool %}<div class="amenity-item">🏊 Pool</div>{% endif %}
+                    {% if property.has_breakfast %}<div class="amenity-item">🍳 Breakfast Included</div>{% endif %}
+                    {% if property.has_free_cancellation %}<div class="amenity-item">✅ Free Cancellation</div>{% endif %}
+                    {% if property.has_parking %}<div class="amenity-item">🚗 Free Parking</div>{% endif %}
+                    {% if property.has_gym %}<div class="amenity-item">💪 Gym</div>{% endif %}
+                    {% if property.has_hot_tub %}<div class="amenity-item">♨️ Hot Tub</div>{% endif %}
+                    {% if property.has_fire_pit %}<div class="amenity-item">🔥 Fire Pit</div>{% endif %}
+                    {% if property.has_ocean_view %}<div class="amenity-item">🌊 Ocean View</div>{% endif %}
+                    {% if property.has_city_view %}<div class="amenity-item">🏙️ City View</div>{% endif %}
+                </div>
+            </div>
+
+            <!-- Photo Gallery -->
+            {% if images %}
+            <div class="detail-section">
+                <h2>Photos</h2>
+                <div class="gallery-grid">
+                    {% for image in images %}
+                    <img src="{% if image.image %}{{ image.image.url }}{% else %}{{ image.image_url }}{% endif %}"
+                         alt="{{ image.caption|default:property.name }}" />
+                    {% endfor %}
+                </div>
+            </div>
+            {% endif %}
+
+            <!-- Reviews -->
+            <div class="detail-section">
+                <h2>Guest Reviews</h2>
+                {% if reviews %}
+                <div class="reviews-list">
+                    {% for review in reviews %}
+                    <div class="review-card">
+                        <div class="review-rating">{{ review.rating }}</div>
+                        <div class="review-meta">
+                            <strong>{{ review.reviewer_name }}</strong>
+                            <span>{{ review.reviewer_location }}</span>
+                            {% if review.is_verified %}
+                            <span class="verified">✓ Verified stay</span>
+                            {% endif %}
+                        </div>
+                        <p class="review-text">"{{ review.review_text }}"</p>
+                    </div>
+                    {% endfor %}
+                </div>
+                {% else %}
+                <p class="no-reviews">No reviews yet — be the first to stay here!</p>
+                {% endif %}
+            </div>
+
+        </div>
+
+        <!-- ── RIGHT COLUMN — BOOKING CARD ── -->
+        <div class="detail-sidebar">
+            <div class="booking-card">
+                {% with pricing=property.get_current_price %}
+                {% if pricing %}
+                <div class="booking-card-price">
+                    {% if pricing.original_price %}
+                    <span class="price-original">${{ pricing.original_price }}</span>
+                    {% endif %}
+                    <span class="price-big">${{ pricing.price_per_night }}</span>
+                    <span class="price-per">/night</span>
+                    {% if pricing.discount_percent %}
+                    <span class="discount-badge">−{{ pricing.discount_percent }}% off</span>
+                    {% endif %}
+                </div>
+                {% endif %}
+                {% endwith %}
+
+                <form method="POST" action="{% url 'make_booking' %}">
+                    {% csrf_token %}
+                    <input type="hidden" name="property" value="{{ property.pk }}" />
+
+                    <div class="form-row">
+                        <label>First Name *</label>
+                        <input type="text" name="first_name" class="form-input"
+                               value="{% if user.is_authenticated %}{{ user.first_name }}{% endif %}" required />
+                    </div>
+                    <div class="form-row">
+                        <label>Last Name *</label>
+                        <input type="text" name="last_name" class="form-input"
+                               value="{% if user.is_authenticated %}{{ user.last_name }}{% endif %}" required />
+                    </div>
+                    <div class="form-row">
+                        <label>Email *</label>
+                        <input type="email" name="email" class="form-input"
+                               value="{% if user.is_authenticated %}{{ user.email }}{% endif %}" required />
+                    </div>
+                    <div class="form-row">
+                        <label>Phone</label>
+                        <input type="text" name="phone" class="form-input" placeholder="+1 (555) 000-0000" />
+                    </div>
+                    <div class="form-row-2col">
+                        <div class="form-row">
+                            <label>Check-in *</label>
+                            <input type="date" name="check_in" class="form-input" required />
+                        </div>
+                        <div class="form-row">
+                            <label>Check-out *</label>
+                            <input type="date" name="check_out" class="form-input" required />
+                        </div>
+                    </div>
+                    <div class="form-row-2col">
+                        <div class="form-row">
+                            <label>Adults</label>
+                            <input type="number" name="adults" class="form-input" value="2" min="1" />
+                        </div>
+                        <div class="form-row">
+                            <label>Rooms</label>
+                            <input type="number" name="rooms" class="form-input" value="1" min="1" />
+                        </div>
+                    </div>
+                    <div class="form-row">
+                        <label>Special Requests</label>
+                        <textarea name="special_requests" class="form-textarea" rows="2"></textarea>
+                    </div>
+                    <input type="hidden" name="payment_method" value="stripe" />
+                    <button type="submit" class="btn-book">🔒 Reserve Now</button>
+                    <p class="secure-note">Free cancellation · No credit card needed</p>
+                </form>
+
+                <div class="property-quick-info">
+                    <div>👥 Up to {{ property.max_guests }} guests</div>
+                    <div>🛏️ {{ property.max_rooms }} room{{ property.max_rooms|pluralize }}</div>
+                    <div>📍 {{ property.city }}, {{ property.state }}</div>
+                </div>
+            </div>
+        </div>
+
+    </div>
+</div>
+
+<style>
+.property-detail-page { max-width: 1200px; margin: 0 auto; padding: 0 24px 60px; }
+.detail-hero { position: relative; height: 420px; border-radius: 0 0 20px 20px; overflow: hidden; margin-bottom: 32px; }
+.detail-hero img { width: 100%; height: 100%; object-fit: cover; }
+.detail-hero-overlay { position: absolute; inset: 0; background: linear-gradient(to top, rgba(0,0,0,0.7) 0%, transparent 60%); }
+.detail-hero-content { position: absolute; bottom: 32px; left: 32px; color: white; }
+.detail-hero-content h1 { font-size: 2rem; font-weight: 800; margin: 8px 0 4px; }
+.detail-hero-content p { opacity: 0.85; }
+.property-type-badge { background: rgba(255,255,255,0.2); border: 1px solid rgba(255,255,255,0.4); padding: 4px 12px; border-radius: 20px; font-size: 0.8rem; }
+.detail-layout { display: grid; grid-template-columns: 1fr 380px; gap: 32px; }
+.detail-rating-bar { display: flex; align-items: center; gap: 16px; padding: 20px; background: white; border-radius: 12px; box-shadow: 0 2px 12px rgba(0,0,0,0.08); margin-bottom: 24px; }
+.rating-score-lg { background: var(--primary); color: white; padding: 10px 16px; border-radius: 10px; font-size: 1.5rem; font-weight: 800; }
+.detail-section { background: white; border-radius: 12px; padding: 24px; box-shadow: 0 2px 12px rgba(0,0,0,0.08); margin-bottom: 24px; }
+.detail-section h2 { font-size: 1.2rem; font-weight: 700; margin-bottom: 16px; }
+.amenities-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(160px, 1fr)); gap: 12px; }
+.amenity-item { background: var(--bg); padding: 10px 14px; border-radius: 8px; font-size: 0.875rem; }
+.gallery-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(200px, 1fr)); gap: 12px; }
+.gallery-grid img { width: 100%; height: 150px; object-fit: cover; border-radius: 8px; }
+.reviews-list { display: flex; flex-direction: column; gap: 16px; }
+.no-reviews { color: var(--text-muted); font-style: italic; }
+.booking-card { background: white; border-radius: 16px; padding: 24px; box-shadow: 0 8px 32px rgba(0,0,0,0.12); position: sticky; top: 84px; }
+.booking-card-price { margin-bottom: 20px; display: flex; align-items: baseline; gap: 8px; flex-wrap: wrap; }
+.price-big { font-size: 2rem; font-weight: 800; color: var(--primary); }
+.discount-badge { background: #ffebee; color: #c62828; padding: 3px 8px; border-radius: 4px; font-size: 0.75rem; font-weight: 700; }
+.property-quick-info { margin-top: 16px; padding-top: 16px; border-top: 1px solid var(--border); display: flex; flex-direction: column; gap: 8px; font-size: 0.875rem; color: var(--text-muted); }
+@media (max-width: 768px) {
+    .detail-layout { grid-template-columns: 1fr; }
+    .booking-card { position: static; }
+    .detail-hero { height: 260px; }
+}
+</style>
+{% endblock %}
